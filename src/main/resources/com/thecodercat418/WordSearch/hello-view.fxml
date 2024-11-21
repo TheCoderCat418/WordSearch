@@ -8,7 +8,7 @@
 <AnchorPane fx:id="ap" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1000.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.thecodercat418.WordSearch.HelloController">
    <children>
       <GridPane fx:id="gridPane" alignment="CENTER" layoutY="72.0" prefHeight="600.0" prefWidth="600.0" />
-      <Label alignment="CENTER" layoutY="14.0" onMouseEntered="#running" prefHeight="37.0" prefWidth="600.0" text="50x50 Word Search" textAlignment="CENTER">
+      <Label alignment="CENTER" layoutY="14.0" prefHeight="37.0" prefWidth="600.0" text="50x50 Word Search" textAlignment="CENTER">
          <font>
             <Font size="22.0" />
          </font>
