@@ -113,7 +113,7 @@ public class HelloController {
                                                                    * the protected ArrayList.
                                                                    */
                 for (int l = 0; l < labelsSelected.size(); l++) {
-                    labelsSelected.get(l).setStyle("-fx-background-color: green");
+                    labelsSelected.get(l);
                     completedLabels.add(labelsSelected.get(l));
                 }
                 labelsSelected.clear(); // Reset selection
@@ -126,14 +126,25 @@ public class HelloController {
     }
 
     public void onLetterClicked(MouseEvent mouseEvent) {
-        if (mouseEvent.getButton().compareTo(MouseButton.SECONDARY) == 0) { /*
-                                                                             * If right mouse button is clicked, reset
-                                                                             * selection.
-                                                                             */
-            for (int i = labelsSelected.size() - 1; i >= 0; i--) {
-                labelsSelected.get(i).setStyle("");
-                labelsSelected.remove(i);
+        if (mouseEvent.getButton().compareTo(MouseButton.SECONDARY) == 0) {
+            /* If right mouse button is clicked, reset selection. */
+            for (Word w : wordsOnGrid) {
+                for (int i = labelsSelected.size() - 1; i >= 0; i--) {
+                    for (Label l : w.letters) {
+                        if (l == labelsSelected.get(i)) {
+                            if (w.found) {
+                                labelsSelected.get(i).setStyle("-fx-background-color: green");
+                            } else {
+                                labelsSelected.get(i).setStyle("");
+                            }
+                        } else {
+                            labelsSelected.get(i).setStyle("");
+                        }
+                    }
+                    labelsSelected.remove(i);
+                }
             }
+
             selecting = false;
             return;
         }
