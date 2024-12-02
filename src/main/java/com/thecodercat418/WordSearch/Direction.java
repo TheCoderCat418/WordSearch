@@ -2,7 +2,7 @@ package com.thecodercat418.WordSearch;
 
 public enum Direction { // Every possible direction.
     RIGHT,
-    //LEFT,
+    LEFT,
     //UP,
     //DOWN,
     //UP_LEFT_DIAGOINAL,

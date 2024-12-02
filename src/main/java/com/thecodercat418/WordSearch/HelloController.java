@@ -65,6 +65,19 @@ public class HelloController {
                     letters.add(l);
                 }
                 break;
+            case LEFT:
+                for (int i = 0; i < word.length(); i++) {
+                    System.out.println(
+                            "Placing letter at " + (Integer.parseInt(gridSize.split("x")[0]) * startingPoint.getX()
+                                    + startingPoint.getY() - i - 1));
+                    Label l = (Label) (gridPane.getChildren()
+                            .get(Integer.parseInt(gridSize.split("x")[0]) * startingPoint.getX()
+                                    + startingPoint.getY() - i));
+                    l.setText(String.valueOf(word.charAt(i)));
+                    letters.add(l);
+                }
+                break;
+
         }
         Word returnWord = new Word(word, startingPoint, direction, letters);
         wordsOnGrid.add(returnWord);
@@ -72,12 +85,11 @@ public class HelloController {
 
     }
 
-    public int[][] getAvailblePlacment(int wordLength, Direction direction) { /*
-                                                                               * Makes sure that the word does not go
-                                                                               * out of bounds. Later, more complicated
-                                                                               * versions of this will include
-                                                                               * overlapping.
-                                                                               */
+    public int[][] getAvailblePlacment(int wordLength, Direction direction) {
+        /*
+         * Makes sure that the word does not go out of bounds. Later, more complicated
+         * versions of this will include overlapping.
+         */
         int[][] grid = new int[Integer.parseInt(gridSize.split("x")[0])][Integer.parseInt(gridSize.split("x")[1])];
         for (int i = 0; i < Integer.parseInt(gridSize.split("x")[0]); i++) {
             for (int j = 0; j < Integer.parseInt(gridSize.split("x")[1]); j++) {
@@ -86,6 +98,12 @@ public class HelloController {
                     case RIGHT:
                         grid[j][i] = 0;
                         if (j + wordLength <= Integer.parseInt(gridSize.split("x")[0])) {
+                            grid[j][i] = 1;
+                        }
+                        break;
+                    case LEFT:
+                        grid[j][i] = 0;
+                        if (j - wordLength <= Integer.parseInt(gridSize.split("x")[0])) {
                             grid[j][i] = 1;
                         }
                         break;
@@ -98,12 +116,9 @@ public class HelloController {
     public boolean wordCompleteion() { // Checks to see if a word is completed.
         for (int i = 0; i < wordsOnGrid.size(); i++) {
             int numCorrect = 0;
-            for (int j = 0; j < labelsSelected.size(); j++) {
-                for (int z = 0; z < wordsOnGrid.get(i).letters.size(); z++) {
-                    if (wordsOnGrid.get(i).letters.get(z) == labelsSelected.get(j)) { /*
-                                                                                       * Compares addresses to see if
-                                                                                       * they are the EXACT same Label.
-                                                                                       */
+            for (int z = 0; z < wordsOnGrid.get(i).letters.size(); z++) {
+                for (int j = 0; j < labelsSelected.size(); j++) {
+                    if (wordsOnGrid.get(i).letters.get(z) == labelsSelected.get(j)) { 
                         numCorrect++;
                     }
                 }
@@ -113,9 +128,10 @@ public class HelloController {
                                                                    * the protected ArrayList.
                                                                    */
                 for (int l = 0; l < labelsSelected.size(); l++) {
-                    labelsSelected.get(l);
+                    labelsSelected.get(l).setStyle("-fx-background-color: green");
                     completedLabels.add(labelsSelected.get(l));
                 }
+                wordsOnGrid.get(i).found = true;
                 labelsSelected.clear(); // Reset selection
                 selecting = false;
                 return true;
@@ -133,7 +149,7 @@ public class HelloController {
                     for (Label l : w.letters) {
                         if (l == labelsSelected.get(i)) {
                             if (w.found) {
-                                labelsSelected.get(i).setStyle("-fx-background-color: green");
+                                labelsSelected.get(i).setStyle("-fx-background-color: green"); //FIX
                             } else {
                                 labelsSelected.get(i).setStyle("");
                             }
@@ -242,7 +258,7 @@ public class HelloController {
             }
         }
 
-        Word aWordPlease = placeWord("hello", Direction.RIGHT);
+        Word aWordPlease = placeWord("hello", Direction.LEFT);
         System.out.println("Cords: " + aWordPlease.startPoint);
     }
 }
