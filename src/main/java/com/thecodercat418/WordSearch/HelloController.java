@@ -40,7 +40,7 @@ public class HelloController {
     private ArrayList<Word> wordsOnGrid = new ArrayList<>();
     private boolean intercept = false;
 
-    public Word placeWord(String word, Direction direction, Point point) {
+    public Word placeWord(String word, Direction direction) {
 
         int[][] placement = getAvailblePlacment(word.length(), direction);
         int placementSelection = 0;
@@ -53,13 +53,13 @@ public class HelloController {
         }
         placementSelection = (int) Math.round(Math.random() * placementSelection) + 1; // Random word placement.
 
-        Point startingPoint = point;
+        Point startingPoint = null;
 
         for (int i = 0; i < placement.length; i++) {
             for (int j = 0; j < placement[i].length; j++) {
 
                 if (placement[i][j] == 1 && placementSelection == 0) {
-                    // startingPoint = new Point(i, j);
+                    startingPoint = new Point(i, j);
                 }
                 if (placement[i][j] == 1) {
                     placementSelection--;
@@ -136,42 +136,24 @@ public class HelloController {
         int[][] grid = new int[Integer.parseInt(gridSize.split("x")[0])][Integer.parseInt(gridSize.split("x")[1])];
         for (int i = 0; i < Integer.parseInt(gridSize.split("x")[0]); i++) {
             for (int j = 0; j < Integer.parseInt(gridSize.split("x")[1]); j++) {
-                Label l = (Label) (gridPane.getChildren().get(Integer.parseInt(gridSize.split("x")[0]) * j + i));
-                if (l.getText().equals("A") || l.getText().equals("E") || l.getText().equals("I")
-                        || l.getText().equals("O") || l.getText().equals("U")) {
-                    grid[i][j] = 0;
-                } else {
-                    grid[i][j] = 1;
-                }
-            }
-        }
-        for (Word word : wordsOnGrid) {
-            Point currPoint = new Point(word.startPoint.getX(), word.startPoint.getY());
-            for (int i = 0; i < word.word.length(); i++) {
-                grid[currPoint.x][currPoint.y] = 0;
-                switch (word.direction) {
-                    case RIGHT:
-                        currPoint.x += 1;
-                        break;
-                    case LEFT:
-                        currPoint.x -= 1;
-                        break;
-                    case UP:
-                        currPoint.y -= 1;
-                        break;
-                    case DOWN:
-                        currPoint.y += 1;
+                grid[i][j] = 1;
+                for (Word w : wordsOnGrid) {
+                    Label l = (Label) (gridPane.getChildren().get(Integer.parseInt(gridSize.split("x")[0]) * j + i));
+                    for (Label l2 : w.letters) {
+                        if (l == l2) {
+                            grid[i][j] = 0;
+                        }
+                    }
                 }
 
             }
         }
-
-        switch (direction) {
-            case RIGHT:
-                for (int i = 0; i < Integer.parseInt(gridSize.split("x")[0]); i++) {
-                    for (int j = 0; j < Integer.parseInt(gridSize.split("x")[1]); j++) {
-                        boolean zero = false;
-                        for (int z = 0; z < wordLength; z++) {
+        for (int i = 0; i < Integer.parseInt(gridSize.split("x")[0]); i++) {
+            for (int j = 0; j < Integer.parseInt(gridSize.split("x")[1]); j++) {
+                boolean zero = false;
+                for (int z = 0; z < wordLength; z++) {
+                    switch (direction) {
+                        case RIGHT:
                             if (j + wordLength < Integer.parseInt(gridSize.split("x")[0]) + 1) {
                                 if (grid[j + z][i] == 0 && grid[j][i] != 0) {
                                     zero = true;
@@ -179,58 +161,95 @@ public class HelloController {
                             } else {
                                 zero = true;
                             }
-                        }
-                        for (int z = 0; z < wordLength; z++) {
-                            if (j + z < Integer.parseInt(gridSize.split("x")[0])) {
-                                if (zero) {
-                                    if (grid[j + z][i] == 1) {
-                                        grid[j + z][i] = -1;
-                                    }
-                                } else {
-                                    if (grid[j + z][i] == -1) {
-                                        grid[j + z][i] = 1;
+
+                            for (int a = 0; a < wordLength; a++) {
+                                if (j + a < Integer.parseInt(gridSize.split("x")[0])) {
+                                    if (zero) {
+                                        if (grid[j + a][i] == 1) {
+                                            grid[j + a][i] = -1;
+                                        }
+                                    } else {
+                                        if (grid[j + a][i] == -1) {
+                                            grid[j + a][i] = 1;
+                                        }
                                     }
                                 }
                             }
-                        }
-                    }
-                }
-
-                break;
-            case LEFT:
-                for (int i = 0; i < Integer.parseInt(gridSize.split("x")[0]); i++) {
-                    for (int j = 0; j < Integer.parseInt(gridSize.split("x")[1]); j++) {
-                        boolean zero = false;
-                        for(int z = 0; z < wordLength; z++){
-                            if(j - z > -1){
-                                if(grid[j - z][i] == 0){
+                            break;
+                        case LEFT:
+                            if (j - z > -1) {
+                                if (grid[j - z][i] == 0) {
                                     zero = true;
                                     break;
                                 }
-                            }else{
+                            } else {
                                 zero = true;
                             }
-                        }
-                        for(int z = 0; z < wordLength; z++){
-                            if(j - z > -1){
-                                if(zero){
-                                    if(grid[j - z][i] == 0){
-                                        break;
-                                    }
-                                    if (grid[j - z][i] == 1) {
-                                        grid[j - z][i] = -1;
+
+                            for (int a = 0; a < wordLength; a++) {
+                                if (j - a > -1) {
+                                    if (zero) {
+                                        if (grid[j - a][i] == 0) {
+                                            break;
+                                        }
+                                        if (grid[j - a][i] == 1) {
+                                            grid[j - a][i] = -1;
+                                        }
                                     }
                                 }
                             }
-                        }
+                            break;
+                        case DOWN:
+                            if (i + z < Integer.parseInt(gridSize.split("x")[0])) {
+                                if (grid[j][i + z] == 0) {
+                                    zero = true;
+                                    break;
+                                }
+                            } else {
+                                zero = true;
+                            }
+
+                            for (int a = 0; a < wordLength; a++) {
+                                if (i + a < Integer.parseInt(gridSize.split("x")[0])) {
+                                    if (zero) {
+                                        if (grid[j][i + a] == 0) {
+                                            break;
+                                        }
+                                        if (grid[j][i + a] == 1) {
+                                            grid[j][i + a] = -1;
+                                        }
+                                    }
+                                }
+                            }
+                            break;
+                        case UP:
+                            if (i - z > -1) {
+                                if (grid[j][i - z] == 0) {
+                                    zero = true;
+                                    break;
+                                }
+                            } else {
+                                zero = true;
+                            }
+
+                            for (int a = 0; a < wordLength; a++) {
+                                if (i - a > -1) {
+                                    if (zero) {
+                                        if (grid[j][i - a] == 0) {
+                                            break;
+                                        }
+                                        if (grid[j][i - a] == 1) {
+                                            grid[j][i - a] = -1;
+                                        }
+                                    }
+                                }
+                            }
+                            break;
                     }
                 }
-                break;
-            case DOWN:
-                break;
-            case UP:
-                break;
+            }
         }
+
         return grid;
     }
 
@@ -297,6 +316,11 @@ public class HelloController {
                                             * line, only if there is a yellow next to it.
                                             */
                 for (int j = -1; j < 2; j++) { // Checks one grid out from the clicked Label
+                    if(Integer.parseInt(gridSize.split("x")[0]) * (GridPane.getRowIndex(label) + i)
+                    + GridPane.getColumnIndex(label) + j < -1 || Integer.parseInt(gridSize.split("x")[0]) * (GridPane.getRowIndex(label) + i)
+                    + GridPane.getColumnIndex(label) + j > Integer.parseInt(gridSize.split("x")[0]) * Integer.parseInt(gridSize.split("x")[0])){
+                        continue;
+                    }
                     if (gridPane.getChildren()
                             .get(Integer.parseInt(gridSize.split("x")[0]) * (GridPane.getRowIndex(label) + i)
                                     + GridPane.getColumnIndex(label) + j)
@@ -386,10 +410,11 @@ public class HelloController {
             }
         }
 
-        // Word aWordPlease = placeWord("hello", Direction.RIGHT, new Point(8, 9));
-        // Word aWordPleasea = placeWord("hello", Direction.RIGHT, new Point(5, 6));
-        // placeWord("hello", Direction.RIGHT, new Point(10, 10));
-        // System.out.println("Cords: " + aWordPlease.startPoint);
+        placeWord("NANA", Direction.RIGHT);
+        placeWord("GREG", Direction.RIGHT);
+        placeWord("ERIN", Direction.RIGHT);
+        placeWord("CORA", Direction.RIGHT);
+        placeWord("ELLIOTT", Direction.RIGHT);
     }
 
     // DEBUG TOOLS
@@ -449,7 +474,7 @@ public class HelloController {
         }
 
         if (!addWord.isSelected()) {
-            placeWord(a.getText(), direction, lastClicked);
+            //placeWord(a.getText(), direction, lastClicked);
             for (int i = 0; i < placement.length; i++) {
                 for (int j = 0; j < placement[i].length; j++) {
                     Label l = (Label) gridPane.getChildren().get(i * 25 + j);
