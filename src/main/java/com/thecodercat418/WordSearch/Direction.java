@@ -5,8 +5,8 @@ public enum Direction { // Every possible direction.
     LEFT,
     UP,
     DOWN,
-    //UP_LEFT_DIAGOINAL,
-    //DOWN_LEFT_DIAGOINAL,
-    //UP_RIGHT_DIAGOINAL,
-    //DOWN_RIGHT_DIAGOINAL
+    UP_LEFT_DIAGOINAL,
+    DOWN_LEFT_DIAGOINAL,
+    UP_RIGHT_DIAGOINAL,
+    DOWN_RIGHT_DIAGOINAL
 }

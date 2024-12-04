@@ -4,7 +4,10 @@ import java.util.ArrayList;
 
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -18,41 +21,48 @@ public class HelloController {
     private AnchorPane ap;
     @FXML
     private GridPane gridPane;
+    public ToggleButton addWord;
+    public ToggleButton right;
+    public ToggleButton left;
+    public ToggleButton up;
+    public ToggleButton down;
+    public ToggleButton DOWN_LEFT_DIAGOINAL;
+    public ToggleButton UP_LEFT_DIAGOINAL;
+    public ToggleButton DOWN_RIGHT_DIAGOINAL;
+    public ToggleButton UP_RIGHT_DIAGOINAL;
+    public ToggleButton gro;
+    public TextField a;
+
     private String gridSize = "25x25";
     private boolean selecting = false;
     private ArrayList<Label> labelsSelected = new ArrayList<>();
     private ArrayList<Label> completedLabels = new ArrayList<>();
     private ArrayList<Word> wordsOnGrid = new ArrayList<>();
+    private boolean intercept = false;
 
-    public Word placeWord(String word, Direction direction) {
+    public Word placeWord(String word, Direction direction, Point point) {
 
         int[][] placement = getAvailblePlacment(word.length(), direction);
         int placementSelection = 0;
         for (int i = 0; i < placement.length; i++) {
             for (int j = 0; j < placement[i].length; j++) {
-                if (placement[j][i] == 1) {
+                if (placement[i][j] == 1) {
                     placementSelection++;
                 }
             }
         }
         placementSelection = (int) Math.round(Math.random() * placementSelection) + 1; // Random word placement.
 
-        Point startingPoint = null;
+        Point startingPoint = point;
 
         for (int i = 0; i < placement.length; i++) {
             for (int j = 0; j < placement[i].length; j++) {
 
-                if (placement[j][i] == 1 && placementSelection == 0) {
-                    startingPoint = new Point(i, j);
-                    // startingPoint = new Point(0, 6);
+                if (placement[i][j] == 1 && placementSelection == 0) {
+                    // startingPoint = new Point(i, j);
                 }
-                Label l = (Label) gridPane.getChildren().get(i * 25 + j);
-                if (placement[j][i] == 1) {
-                    
-                    l.setStyle("-fx-background-color: blue");
+                if (placement[i][j] == 1) {
                     placementSelection--;
-                }else{
-                    l.setStyle("");
                 }
             }
         }
@@ -126,51 +136,100 @@ public class HelloController {
         int[][] grid = new int[Integer.parseInt(gridSize.split("x")[0])][Integer.parseInt(gridSize.split("x")[1])];
         for (int i = 0; i < Integer.parseInt(gridSize.split("x")[0]); i++) {
             for (int j = 0; j < Integer.parseInt(gridSize.split("x")[1]); j++) {
-                gridPane.getChildren().get(i * Integer.parseInt(gridSize.split("x")[0]) + j);
-                grid[j][i] = 0;
-                switch (direction) {
-                    case RIGHT:
-                        if (j + wordLength <= Integer.parseInt(gridSize.split("x")[0])) {
-                            grid[j][i] = 1;
-                        }
-                        
-                        break;
-                    case LEFT:
-                        if (j - wordLength + 1 >= 0) {
-                            grid[j][i] = 1;
-                        }
-                        break;
-                    case DOWN:
-                        if (i - wordLength + 1 >= 0) {
-                            grid[j][i] = 1;
-                        }
-                        break;
-                    case UP:
-                        if (i + wordLength <= Integer.parseInt(gridSize.split("x")[1])) {
-                            grid[j][i] = 1;
-                        }
-                        break;
+                Label l = (Label) (gridPane.getChildren().get(Integer.parseInt(gridSize.split("x")[0]) * j + i));
+                if (l.getText().equals("A") || l.getText().equals("E") || l.getText().equals("I")
+                        || l.getText().equals("O") || l.getText().equals("U")) {
+                    grid[i][j] = 0;
+                } else {
+                    grid[i][j] = 1;
                 }
             }
         }
-        for(Word word : wordsOnGrid){
+        for (Word word : wordsOnGrid) {
             Point currPoint = new Point(word.startPoint.getX(), word.startPoint.getY());
-            for(int i = 0; i < word.word.length(); i++){
-                switch(word.direction){
+            for (int i = 0; i < word.word.length(); i++) {
+                grid[currPoint.x][currPoint.y] = 0;
+                switch (word.direction) {
                     case RIGHT:
-                        currPoint.y += 1;
-                        break;
-                    case LEFT:
-                        currPoint.y -= 1;
-                        break;
-                    case UP:
                         currPoint.x += 1;
                         break;
+                    case LEFT:
+                        currPoint.x -= 1;
+                        break;
+                    case UP:
+                        currPoint.y -= 1;
+                        break;
                     case DOWN:
-                        currPoint.x -= 1; //HERE
-
+                        currPoint.y += 1;
                 }
+
             }
+        }
+
+        switch (direction) {
+            case RIGHT:
+                for (int i = 0; i < Integer.parseInt(gridSize.split("x")[0]); i++) {
+                    for (int j = 0; j < Integer.parseInt(gridSize.split("x")[1]); j++) {
+                        boolean zero = false;
+                        for (int z = 0; z < wordLength; z++) {
+                            if (j + wordLength < Integer.parseInt(gridSize.split("x")[0]) + 1) {
+                                if (grid[j + z][i] == 0 && grid[j][i] != 0) {
+                                    zero = true;
+                                }
+                            } else {
+                                zero = true;
+                            }
+                        }
+                        for (int z = 0; z < wordLength; z++) {
+                            if (j + z < Integer.parseInt(gridSize.split("x")[0])) {
+                                if (zero) {
+                                    if (grid[j + z][i] == 1) {
+                                        grid[j + z][i] = -1;
+                                    }
+                                } else {
+                                    if (grid[j + z][i] == -1) {
+                                        grid[j + z][i] = 1;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                break;
+            case LEFT:
+                for (int i = 0; i < Integer.parseInt(gridSize.split("x")[0]); i++) {
+                    for (int j = 0; j < Integer.parseInt(gridSize.split("x")[1]); j++) {
+                        boolean zero = false;
+                        for(int z = 0; z < wordLength; z++){
+                            if(j - z > -1){
+                                if(grid[j - z][i] == 0){
+                                    zero = true;
+                                    break;
+                                }
+                            }else{
+                                zero = true;
+                            }
+                        }
+                        for(int z = 0; z < wordLength; z++){
+                            if(j - z > -1){
+                                if(zero){
+                                    if(grid[j - z][i] == 0){
+                                        break;
+                                    }
+                                    if (grid[j - z][i] == 1) {
+                                        grid[j - z][i] = -1;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                break;
+            case DOWN:
+                break;
+            case UP:
+                break;
         }
         return grid;
     }
@@ -206,22 +265,19 @@ public class HelloController {
     public void onLetterClicked(MouseEvent mouseEvent) {
         if (mouseEvent.getButton().compareTo(MouseButton.SECONDARY) == 0) {
             /* If right mouse button is clicked, reset selection. */
-            for (Word w : wordsOnGrid) {
-                for (Label l : w.letters) {
-                    for (int i = 0; i < labelsSelected.size(); i++) {
-                        if (l == labelsSelected.get(i)) {
-                            if (w.found) {
-                                labelsSelected.get(i).setStyle("-fx-background-color: green"); // FIX
-                            } else {
-                                labelsSelected.get(i).setStyle("");
-                            }
+            for (int i = 0; i < labelsSelected.size(); i++) {
+                for (Word w : wordsOnGrid) {
+                    for (Label l : w.letters) {
+                        if (w.found && l == labelsSelected.get(i)) {
+                            labelsSelected.get(i).setStyle("-fx-background-color: green");
                         } else {
                             labelsSelected.get(i).setStyle("");
                         }
                     }
-
                 }
+
             }
+
             labelsSelected.clear();
             selecting = false;
             return;
@@ -305,21 +361,112 @@ public class HelloController {
                 l.setAlignment(Pos.CENTER);
 
                 l.setOnMouseEntered(actionEvent -> {
-                    onMouseHover(actionEvent, true);
+                    if (intercept) {
+                        INTERCEPTER("LetterEntered", actionEvent);
+                    } else {
+                        onMouseHover(actionEvent, true);
+                    }
                 });
                 l.setOnMouseExited(actionEvent -> {
-                    onMouseHover(actionEvent, false);
+                    if (intercept) {
+                        INTERCEPTER("LetterExited", actionEvent);
+                    } else {
+                        onMouseHover(actionEvent, false);
+                    }
                 });
                 l.setOnMouseClicked(actionEvent -> {
-                    onLetterClicked(actionEvent);
+                    if (intercept) {
+                        INTERCEPTER("LetterClicked", actionEvent);
+                    } else {
+                        onLetterClicked(actionEvent);
+                    }
                 });
 
                 gridPane.add(l, j, i);
             }
         }
 
-        Word aWordPlease = placeWord("hello", Direction.UP);
-        Word aWordPleasea = placeWord("hello", Direction.UP);
-        System.out.println("Cords: " + aWordPlease.startPoint);
+        // Word aWordPlease = placeWord("hello", Direction.RIGHT, new Point(8, 9));
+        // Word aWordPleasea = placeWord("hello", Direction.RIGHT, new Point(5, 6));
+        // placeWord("hello", Direction.RIGHT, new Point(10, 10));
+        // System.out.println("Cords: " + aWordPlease.startPoint);
     }
+
+    // DEBUG TOOLS
+
+    Point lastClicked = new Point(0, 0);
+
+    public void INTERCEPTER(String what, Object thing) {
+        switch (what) {
+            case "LetterClicked": // Label that was clicked
+                MouseEvent me = (MouseEvent) thing;
+                Label label = (Label) me.getSource();
+                lastClicked = new Point(GridPane.getRowIndex(label), GridPane.getColumnIndex(label));
+                break;
+            case "LetterExited":
+                break;
+            case "LetterEntered":
+                break;
+        }
+    }
+
+    public void addWord() {
+
+        Direction direction = Direction.RIGHT;
+        if (right.isSelected()) {
+            direction = Direction.RIGHT;
+        } else if (left.isSelected()) {
+            direction = Direction.LEFT;
+        } else if (up.isSelected()) {
+            direction = Direction.UP;
+        } else if (down.isSelected()) {
+            direction = Direction.DOWN;
+        } else if (UP_LEFT_DIAGOINAL.isSelected()) {
+            direction = Direction.UP_LEFT_DIAGOINAL;
+        } else if (UP_RIGHT_DIAGOINAL.isSelected()) {
+            direction = Direction.UP_RIGHT_DIAGOINAL;
+        } else if (DOWN_LEFT_DIAGOINAL.isSelected()) {
+            direction = Direction.DOWN_LEFT_DIAGOINAL;
+        } else if (DOWN_RIGHT_DIAGOINAL.isSelected()) {
+            direction = Direction.DOWN_RIGHT_DIAGOINAL;
+        }
+
+        int[][] placement = getAvailblePlacment(a.getText().length(), direction);
+
+        for (int i = 0; i < placement.length; i++) {
+            for (int j = 0; j < placement[i].length; j++) {
+                Label l = (Label) gridPane.getChildren().get(i * 25 + j);
+                if (placement[j][i] == -1) {
+                    l.setStyle("-fx-background-color: blue");
+                }
+                if (placement[j][i] == 1) {
+                    l.setStyle("-fx-background-color: green");
+                }
+                if (placement[j][i] == 0) {
+                    l.setStyle("-fx-background-color: red");
+                }
+            }
+        }
+
+        if (!addWord.isSelected()) {
+            placeWord(a.getText(), direction, lastClicked);
+            for (int i = 0; i < placement.length; i++) {
+                for (int j = 0; j < placement[i].length; j++) {
+                    Label l = (Label) gridPane.getChildren().get(i * 25 + j);
+                    l.setStyle("");
+
+                }
+            }
+        }
+
+    }
+
+    public void toggleInterceptGRO() {
+        if (intercept) {
+            intercept = false;
+        } else {
+            intercept = true;
+        }
+    }
+
 }
