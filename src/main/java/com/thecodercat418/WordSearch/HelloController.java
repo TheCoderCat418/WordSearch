@@ -263,7 +263,7 @@ public class HelloController {
                     }
                 }
             }
-            if (numCorrect == wordsOnGrid.get(i).word.length()) { /*
+            if (numCorrect == wordsOnGrid.get(i).word.length() && !wordsOnGrid.get(i).found) { /*
                                                                    * If they all are, make them green and add them to
                                                                    * the protected ArrayList.
                                                                    */
@@ -285,12 +285,11 @@ public class HelloController {
         if (mouseEvent.getButton().compareTo(MouseButton.SECONDARY) == 0) {
             /* If right mouse button is clicked, reset selection. */
             for (int i = 0; i < labelsSelected.size(); i++) {
+                labelsSelected.get(i).setStyle("");
                 for (Word w : wordsOnGrid) {
                     for (Label l : w.letters) {
                         if (w.found && l == labelsSelected.get(i)) {
                             labelsSelected.get(i).setStyle("-fx-background-color: green");
-                        } else {
-                            labelsSelected.get(i).setStyle("");
                         }
                     }
                 }
