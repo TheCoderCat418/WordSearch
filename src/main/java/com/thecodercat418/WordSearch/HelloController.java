@@ -40,9 +40,9 @@ public class HelloController {
     private ArrayList<Word> wordsOnGrid = new ArrayList<>();
     private boolean intercept = false;
 
-    public Word placeWord(String word, Direction direction) {
+    public Word placeWord(String word, Direction direction, Point point) {
 
-        int[][] placement = getAvailblePlacment(word.length(), direction);
+        int[][] placement = getAvailblePlacment(word, direction);
         int placementSelection = 0;
         for (int i = 0; i < placement.length; i++) {
             for (int j = 0; j < placement[i].length; j++) {
@@ -53,13 +53,13 @@ public class HelloController {
         }
         placementSelection = (int) Math.round(Math.random() * placementSelection) + 1; // Random word placement.
 
-        Point startingPoint = null;
+        Point startingPoint = point;
 
         for (int i = 0; i < placement.length; i++) {
             for (int j = 0; j < placement[i].length; j++) {
 
                 if (placement[i][j] == 1 && placementSelection == 0) {
-                    startingPoint = new Point(i, j);
+                    //startingPoint = new Point(i, j);
                 }
                 if (placement[i][j] == 1) {
                     placementSelection--;
@@ -128,11 +128,14 @@ public class HelloController {
 
     }
 
-    public int[][] getAvailblePlacment(int wordLength, Direction direction) {
+    public int[][] getAvailblePlacment(String word, Direction direction) {
         /*
          * Makes sure that the word does not go out of bounds. Later, more complicated
          * versions of this will include overlapping.
          */
+        word = word.toUpperCase();
+        int wordLength = word.length();
+
         int[][] grid = new int[Integer.parseInt(gridSize.split("x")[0])][Integer.parseInt(gridSize.split("x")[1])];
         for (int i = 0; i < Integer.parseInt(gridSize.split("x")[0]); i++) {
             for (int j = 0; j < Integer.parseInt(gridSize.split("x")[1]); j++) {
@@ -151,11 +154,15 @@ public class HelloController {
         for (int i = 0; i < Integer.parseInt(gridSize.split("x")[0]); i++) {
             for (int j = 0; j < Integer.parseInt(gridSize.split("x")[1]); j++) {
                 boolean zero = false;
+                boolean strange = false;
                 for (int z = 0; z < wordLength; z++) {
                     switch (direction) {
                         case RIGHT:
                             if (j + wordLength < Integer.parseInt(gridSize.split("x")[0]) + 1) {
-                                if (grid[j + z][i] == 0 && grid[j][i] != 0) {
+                                Label l = (Label) gridPane.getChildrenUnmodifiable().get(i * Integer.parseInt(gridSize.split("x")[0]) + j+z);
+                                if(grid[j + z][i] == 0 && l.getText().equals(word.substring(z, z+1))){
+                                    strange = true;
+                                }else if (grid[j + z][i] == 0 && grid[j][i] != 0) {
                                     zero = true;
                                 }
                             } else {
@@ -166,12 +173,16 @@ public class HelloController {
                                 if (j + a < Integer.parseInt(gridSize.split("x")[0])) {
                                     if (zero) {
                                         if (grid[j + a][i] == 1) {
-                                            grid[j + a][i] = -1;
+                                             grid[j + a][i] = -1;
+                                         }
+                                    } else if(strange) {
+                                        if (grid[j][i] == 1 || (grid[j][i] == 0 && a == 0)) { // fix strage
+                                            grid[j][i] = 2;
                                         }
                                     } else {
-                                        if (grid[j + a][i] == -1) {
-                                            grid[j + a][i] = 1;
-                                        }
+                                         if (grid[j + a][i] == -1) {
+                                             grid[j + a][i] = 1;
+                                         }
                                     }
                                 }
                             }
@@ -409,11 +420,11 @@ public class HelloController {
             }
         }
 
-        placeWord("NANA", Direction.RIGHT);
-        placeWord("GREG", Direction.RIGHT);
-        placeWord("ERIN", Direction.RIGHT);
-        placeWord("CORA", Direction.RIGHT);
-        placeWord("ELLIOTT", Direction.RIGHT);
+        // placeWord("NANA", Direction.RIGHT);
+        // placeWord("GREG", Direction.RIGHT);
+        // placeWord("ERIN", Direction.RIGHT);
+        // placeWord("CORA", Direction.RIGHT);
+        // placeWord("ELLIOTT", Direction.RIGHT);
     }
 
     // DEBUG TOOLS
@@ -455,7 +466,7 @@ public class HelloController {
             direction = Direction.DOWN_RIGHT_DIAGOINAL;
         }
 
-        int[][] placement = getAvailblePlacment(a.getText().length(), direction);
+        int[][] placement = getAvailblePlacment(a.getText(), direction);
 
         for (int i = 0; i < placement.length; i++) {
             for (int j = 0; j < placement[i].length; j++) {
@@ -469,11 +480,14 @@ public class HelloController {
                 if (placement[j][i] == 0) {
                     l.setStyle("-fx-background-color: red");
                 }
+                if (placement[j][i] == 2) {
+                    l.setStyle("-fx-background-color: yellow");
+                }
             }
         }
 
         if (!addWord.isSelected()) {
-            //placeWord(a.getText(), direction, lastClicked);
+            placeWord(a.getText(), direction, lastClicked);
             for (int i = 0; i < placement.length; i++) {
                 for (int j = 0; j < placement[i].length; j++) {
                     Label l = (Label) gridPane.getChildren().get(i * 25 + j);
