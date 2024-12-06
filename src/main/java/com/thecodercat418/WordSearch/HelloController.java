@@ -160,9 +160,9 @@ public class HelloController {
                         case RIGHT:
                             if (j + wordLength < Integer.parseInt(gridSize.split("x")[0]) + 1) {
                                 Label l = (Label) gridPane.getChildrenUnmodifiable().get(i * Integer.parseInt(gridSize.split("x")[0]) + j+z);
-                                if(grid[j + z][i] == 0 && l.getText().equals(word.substring(z, z+1))){
+                                if(grid[j + z][i] == 0 && l.getText().equals(word.substring(z, z+1)) && grid[j][i] != 0){
                                     strange = true;
-                                }else if (grid[j + z][i] == 0 && grid[j][i] != 0) {
+                                }else if (grid[j + z][i] == 0) {
                                     zero = true;
                                 }
                             } else {
@@ -175,8 +175,9 @@ public class HelloController {
                                         if (grid[j + a][i] == 1) {
                                              grid[j + a][i] = -1;
                                          }
+                                         
                                     } else if(strange) {
-                                        if (grid[j][i] == 1 || (grid[j][i] == 0 && a == 0)) { // fix strage
+                                        if (grid[j][i] == 1 || (grid[j][i] == 0 && a == 0)) {
                                             grid[j][i] = 2;
                                         }
                                     } else {
@@ -189,9 +190,11 @@ public class HelloController {
                             break;
                         case LEFT:
                             if (j - z > -1) {
-                                if (grid[j - z][i] == 0) {
+                                Label l = (Label) gridPane.getChildrenUnmodifiable().get(i * Integer.parseInt(gridSize.split("x")[0]) + j-z);
+                                if(grid[j - z][i] == 0 && l.getText().equals(word.substring(z, z+1)) && grid[j][i] != 0){
+                                    strange = true;
+                                }else if (grid[j -z ][i] == 0) {
                                     zero = true;
-                                    break;
                                 }
                             } else {
                                 zero = true;
@@ -206,15 +209,21 @@ public class HelloController {
                                         if (grid[j - a][i] == 1) {
                                             grid[j - a][i] = -1;
                                         }
+                                    } else if(strange) {
+                                        if (grid[j][i] == 1 || (grid[j][i] == 0 && a == 0)) {
+                                            grid[j][i] = 2;
+                                        }
                                     }
                                 }
                             }
                             break;
                         case DOWN:
                             if (i + z < Integer.parseInt(gridSize.split("x")[0])) {
-                                if (grid[j][i + z] == 0) {
+                                Label l = (Label) gridPane.getChildrenUnmodifiable().get((i+z) * Integer.parseInt(gridSize.split("x")[0]) + j);
+                                if(grid[j][i +z] == 0 && l.getText().equals(word.substring(z, z+1)) && grid[j][i] != 0){
+                                    strange = true;
+                                }else if (grid[j][i + z] == 0) {
                                     zero = true;
-                                    break;
                                 }
                             } else {
                                 zero = true;
@@ -229,15 +238,21 @@ public class HelloController {
                                         if (grid[j][i + a] == 1) {
                                             grid[j][i + a] = -1;
                                         }
+                                    }else if(strange) {
+                                        if (grid[j][i] == 1 || (grid[j][i] == 0 && a == 0)) {
+                                            grid[j][i] = 2;
+                                        }
                                     }
                                 }
                             }
                             break;
                         case UP:
                             if (i - z > -1) {
-                                if (grid[j][i - z] == 0) {
+                                Label l = (Label) gridPane.getChildrenUnmodifiable().get((i-z) * Integer.parseInt(gridSize.split("x")[0]) + j);
+                                if(grid[j][i -z] == 0 && l.getText().equals(word.substring(z, z+1)) && grid[j][i] != 0){
+                                    strange = true;
+                                }else if (grid[j][i - z] == 0) {
                                     zero = true;
-                                    break;
                                 }
                             } else {
                                 zero = true;
@@ -251,6 +266,10 @@ public class HelloController {
                                         }
                                         if (grid[j][i - a] == 1) {
                                             grid[j][i - a] = -1;
+                                        }
+                                    } else if(strange) {
+                                        if (grid[j][i] == 1 || (grid[j][i] == 0 && a == 0)) {
+                                            grid[j][i] = 2;
                                         }
                                     }
                                 }
