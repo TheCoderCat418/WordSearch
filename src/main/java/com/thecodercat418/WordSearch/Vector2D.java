@@ -1,19 +1,19 @@
 package com.thecodercat418.WordSearch;
 
-public class Point { // Record? Simple storage point class.
+public class Vector2D { // Record? Simple storage point class.
     public int x;
     public int y;
 
-    public Point(int x, int y) {
+    public Vector2D(int x, int y) {
         this.x = x;
         this.y = y;
     }
 
-    public int getX() {
+    public int x() {
         return x;
     }
 
-    public int getY() {
+    public int y() {
         return y;
     }
 
