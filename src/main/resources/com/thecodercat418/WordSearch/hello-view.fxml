@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.control.ToggleGroup?>
@@ -16,20 +18,29 @@
             <Font size="22.0" />
          </font>
       </Label>
-      <TextField fx:id="a" layoutX="353.0" layoutY="698.0" />
-      <ToggleButton fx:id="gro" layoutX="14.0" layoutY="698.0" mnemonicParsing="false" onAction="#toggleInterceptGRO" text="Grid ReadOnly" />
-      <ToggleButton fx:id="addWord" layoutX="515.0" layoutY="698.0" mnemonicParsing="false" onAction="#addWord" text="Add Word" />
-      <ToggleButton fx:id="right" layoutX="353.0" layoutY="730.0" mnemonicParsing="false" selected="true" text="Right">
+      <TextField fx:id="a" layoutX="376.0" layoutY="849.0" />
+      <ToggleButton fx:id="gro" layoutX="497.0" layoutY="824.0" mnemonicParsing="false" onAction="#toggleInterceptGRO" text="Grid ReadOnly" />
+      <ToggleButton fx:id="addWord" layoutX="529.0" layoutY="849.0" mnemonicParsing="false" onAction="#addWord" text="Add Word" />
+      <ToggleButton fx:id="right" layoutX="379.0" layoutY="874.0" mnemonicParsing="false" selected="true" text="Right">
          <toggleGroup>
             <ToggleGroup fx:id="dir" />
          </toggleGroup>
       </ToggleButton>
-      <ToggleButton fx:id="left" layoutX="405.0" layoutY="730.0" mnemonicParsing="false" text="Left" toggleGroup="$dir" />
-      <ToggleButton fx:id="down" layoutX="507.0" layoutY="730.0" mnemonicParsing="false" text="Down" toggleGroup="$dir" />
-      <ToggleButton fx:id="up" layoutX="455.0" layoutY="730.0" mnemonicParsing="false" text="Up" toggleGroup="$dir" />
-      <ToggleButton fx:id="DOWN_LEFT_DIAGOINAL" layoutX="380.0" layoutY="802.0" mnemonicParsing="false" text="DOWN_LEFT_DIAGOINAL" toggleGroup="$dir" />
-      <ToggleButton fx:id="UP_LEFT_DIAGOINAL" layoutX="391.0" layoutY="765.0" mnemonicParsing="false" text="UP_LEFT_DIAGOINAL" toggleGroup="$dir" />
-      <ToggleButton fx:id="DOWN_RIGHT_DIAGOINAL" layoutX="375.0" layoutY="872.0" mnemonicParsing="false" text="DOWN_RIGHT_DIAGOINAL" toggleGroup="$dir" />
-      <ToggleButton fx:id="UP_RIGHT_DIAGOINAL" layoutX="387.0" layoutY="839.0" mnemonicParsing="false" text="UP_RIGHT_DIAGOINAL" toggleGroup="$dir" />
+      <ToggleButton fx:id="left" layoutX="424.0" layoutY="874.0" mnemonicParsing="false" text="Left" toggleGroup="$dir" />
+      <ToggleButton fx:id="down" layoutX="491.0" layoutY="874.0" mnemonicParsing="false" text="Down" toggleGroup="$dir" />
+      <ToggleButton fx:id="up" layoutX="460.0" layoutY="874.0" mnemonicParsing="false" text="Up" toggleGroup="$dir" />
+      <ToggleButton fx:id="DOWN_LEFT_DIAGOINAL" layoutX="450.0" layoutY="924.0" mnemonicParsing="false" text="DOWN_LEFT_DIAGOINAL" toggleGroup="$dir" />
+      <ToggleButton fx:id="UP_LEFT_DIAGOINAL" layoutX="461.0" layoutY="899.0" mnemonicParsing="false" text="UP_LEFT_DIAGOINAL" toggleGroup="$dir" />
+      <ToggleButton fx:id="DOWN_RIGHT_DIAGOINAL" layoutX="435.0" layoutY="974.0" mnemonicParsing="false" text="DOWN_RIGHT_DIAGOINAL" toggleGroup="$dir" />
+      <ToggleButton fx:id="UP_RIGHT_DIAGOINAL" layoutX="456.0" layoutY="949.0" mnemonicParsing="false" text="UP_RIGHT_DIAGOINAL" toggleGroup="$dir" />
+      <ListView fx:id="userWordList" layoutX="14.0" layoutY="700.0" prefHeight="289.0" prefWidth="200.0" />
+      <Label layoutX="83.0" layoutY="672.0" text="Words:">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Label>
+      <RadioButton layoutX="230.0" layoutY="717.0" mnemonicParsing="false" text="Normal" />
+      <RadioButton layoutX="230.0" layoutY="700.0" mnemonicParsing="false" text="Easy (No Overlapping &amp; No Upsidedown words)" />
+      <RadioButton layoutX="230.0" layoutY="734.0" mnemonicParsing="false" text="Hard (MAX)" />
    </children>
 </AnchorPane>
