@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.input.MouseButton;
@@ -31,6 +32,8 @@ public class HelloController {
     public ToggleButton UP_RIGHT_DIAGOINAL;
     public ToggleButton gro;
     public TextField a;
+    public ListView<String> userWordList;
+    public Label title;
 
     private String gridSize = "25x25";
     private boolean selecting = false;
@@ -39,34 +42,64 @@ public class HelloController {
     private ArrayList<Word> wordsOnGrid = new ArrayList<>();
     private boolean intercept = false;
 
-    public Word placeWord(String word, Direction direction, Vector2D point) {
+    public Word placeWord(String word, Direction direction) {
 
         GridSlot[][] placement = getAvailblePlacment(word, direction);
-        int placementSelection = 0;
+        ArrayList<GridSlot> gss = new ArrayList<>();
         for (int i = 0; i < placement.length; i++) {
             for (int j = 0; j < placement[i].length; j++) {
-                if (placement[i][j].status.equals(SlotStatus.FREE)) {
-                    placementSelection++;
+                if (placement[j][i].status.equals(SlotStatus.FREE)
+                        || placement[j][i].status.equals(SlotStatus.OVERLAP)) {
+                    gss.add(placement[j][i]);
                 }
             }
         }
-        placementSelection = (int) Math.round(Math.random() * placementSelection) + 1; // Random word placement.
-
-        Vector2D startingPoint = point;
+        ArrayList<GridSlot> gaa = new ArrayList<>();
 
         for (int i = 0; i < placement.length; i++) {
             for (int j = 0; j < placement[i].length; j++) {
-
-                if (placement[i][j].status.equals(SlotStatus.FREE) && placementSelection == 0) {
-                    // startingPoint = new Point(i, j);
+                if (placement[j][i].status.equals(SlotStatus.OVERLAP)) {
+                    gaa.add(placement[j][i]);
                 }
-                if (placement[i][j].status.equals(SlotStatus.FREE)) {
-                    placementSelection--;
+            }
+        }
+        GridSlot placementSelection;
+        placementSelection = gss.get((int) (Math.random() * gss.size())); // Random word placement.
+
+        Vector2D startingPoint = null;
+        for (int i = 0; i < placement.length; i++) {
+            for (int j = 0; j < placement[i].length; j++) {
+                if (placement[j][i] == placementSelection) {
+                    startingPoint = new Vector2D(i, j);
                 }
             }
         }
 
         ArrayList<Label> letters = new ArrayList<>();
+
+        for (int i = 0; i < placement.length; i++) {
+            for (int j = 0; j < placement[i].length; j++) {
+                Label l = (Label) gridPane.getChildren().get(i * 25 + j);
+                // l.setStyle("");
+                System.out.println(placement[j][i].status);
+                switch (placement[j][i].status) {
+                    case CANTFIT:
+                        // l.setStyle("-fx-background-color: blue");
+                        break;
+                    case WORD:
+                        // l.setStyle("-fx-background-color: red");
+                        break;
+                    case FREE:
+                        // l.setStyle("-fx-background-color: green");
+                        break;
+                    case OVERLAP:
+                        // l.setStyle("-fx-background-color: yellow");
+                        break;
+
+                }
+
+            }
+        }
 
         switch (direction) {
             case RIGHT:
@@ -176,6 +209,7 @@ public class HelloController {
         }
         Word returnWord = new Word(word, startingPoint, direction, letters);
         wordsOnGrid.add(returnWord);
+        userWordList.getItems().add(returnWord.word);
         repairGrid();
         return returnWord;
 
@@ -475,7 +509,7 @@ public class HelloController {
                             for (int a = 0; a < wordLength; a++) {
                                 if (i - a > -1 && j + a < Integer.parseInt(gridSize.split("x")[0])) {
                                     if (zero || border) {
-                                        if (!grid[j + a][i - a].status.equals(SlotStatus.WORD) && !border) {
+                                        if (!grid[j + a][i - a].word.word.isEmpty() && !border) {
                                             break;
                                         }
                                         if (grid[j + a][i - a].status.equals(SlotStatus.FREE)) {
@@ -668,6 +702,7 @@ public class HelloController {
                     completedLabels.add(labelsSelected.get(l));
                 }
                 wordsOnGrid.get(i).found = true;
+                userWordList.getItems().remove(wordsOnGrid.get(i).word);
                 labelsSelected.clear(); // Reset selection
                 selecting = false;
                 return true;
@@ -758,6 +793,10 @@ public class HelloController {
         }
     }
 
+    public void updateGridSize() {
+
+    }
+
     public void initialize() {
         gridPane.getChildren().clear();
 
@@ -807,11 +846,6 @@ public class HelloController {
             }
         }
 
-        // placeWord("NANA", Direction.RIGHT);
-        // placeWord("GREG", Direction.RIGHT);
-        // placeWord("ERIN", Direction.RIGHT);
-        // placeWord("CORA", Direction.RIGHT);
-        // placeWord("ELLIOTT", Direction.RIGHT);
     }
 
     // DEBUG TOOLS
@@ -833,6 +867,40 @@ public class HelloController {
     }
 
     public void addWord() {
+        WordFile wf = WordFile.grabCat("winter");
+        for (String s : wf.words) {
+            Direction d = Direction.RIGHT;
+            int a = (int) (Math.random() * 8);
+            switch (a) {
+                case 0:
+                    d = Direction.RIGHT;
+                    break;
+                case 1:
+                    d = Direction.LEFT;
+                    break;
+                case 2:
+                    d = Direction.UP;
+                    break;
+                case 3:
+                    d = Direction.DOWN;
+                    break;
+                case 4:
+                    d = Direction.DOWN_LEFT_DIAGOINAL;
+                    break;
+                case 5:
+                    d = Direction.DOWN_RIGHT_DIAGOINAL;
+                    break;
+                case 6:
+                    d = Direction.UP_LEFT_DIAGOINAL;
+                    break;
+                case 7:
+                    d = Direction.UP_RIGHT_DIAGOINAL;
+                    break;
+            }
+            placeWord(s, d);
+        }
+        title.setText(wf.title);
+        
 
         Direction direction = Direction.RIGHT;
         if (right.isSelected()) {
@@ -855,31 +923,31 @@ public class HelloController {
 
         GridSlot[][] placement = getAvailblePlacment(a.getText(), direction);
 
-        for (int i = 0; i < placement.length; i++) {
-            for (int j = 0; j < placement[i].length; j++) {
-                Label l = (Label) gridPane.getChildren().get(i * 25 + j);
-                switch (placement[j][i].status) {
-                    case CANTFIT:
-                        l.setStyle("-fx-background-color: blue");
-                        break;
-                    case WORD:
-                        l.setStyle("-fx-background-color: red");
-                        break;
-                    case FREE:
-                        l.setStyle("-fx-background-color: green");
-                        break;
-                    case OVERLAP:
-                        l.setStyle("-fx-background-color: yellow");
-                        break;
+        // for (int i = 0; i < placement.length; i++) {
+        // for (int j = 0; j < placement[i].length; j++) {
+        // Label l = (Label) gridPane.getChildren().get(i * 25 + j);
+        // switch (placement[j][i].status) {
+        // case CANTFIT:
+        // l.setStyle("-fx-background-color: blue");
+        // break;
+        // case WORD:
+        // l.setStyle("-fx-background-color: red");
+        // break;
+        // case FREE:
+        // l.setStyle("-fx-background-color: green");
+        // break;
+        // case OVERLAP:
+        // l.setStyle("-fx-background-color: yellow");
+        // break;
 
-                }
+        // }
 
-            }
+        // }
 
-        }
+        // }
 
         if (!addWord.isSelected()) {
-            placeWord(a.getText(), direction, lastClicked);
+            placeWord(a.getText(), direction);
             for (int i = 0; i < placement.length; i++) {
                 for (int j = 0; j < placement[i].length; j++) {
                     Label l = (Label) gridPane.getChildren().get(i * 25 + j);
