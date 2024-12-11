@@ -35,7 +35,7 @@ public class HelloController {
     public ListView<String> userWordList;
     public Label title;
 
-    private String gridSize = "25x25";
+    private String gridSize = "20x20";
     private boolean selecting = false;
     private ArrayList<Label> labelsSelected = new ArrayList<>();
     private ArrayList<Label> completedLabels = new ArrayList<>();
@@ -77,29 +77,29 @@ public class HelloController {
 
         ArrayList<Label> letters = new ArrayList<>();
 
-        for (int i = 0; i < placement.length; i++) {
-            for (int j = 0; j < placement[i].length; j++) {
-                Label l = (Label) gridPane.getChildren().get(i * 25 + j);
-                // l.setStyle("");
-                System.out.println(placement[j][i].status);
-                switch (placement[j][i].status) {
-                    case CANTFIT:
-                        // l.setStyle("-fx-background-color: blue");
-                        break;
-                    case WORD:
-                        // l.setStyle("-fx-background-color: red");
-                        break;
-                    case FREE:
-                        // l.setStyle("-fx-background-color: green");
-                        break;
-                    case OVERLAP:
-                        // l.setStyle("-fx-background-color: yellow");
-                        break;
+        // for (int i = 0; i < placement.length; i++) {
+        //     for (int j = 0; j < placement[i].length; j++) {
+        //         //Label l = (Label) gridPane.getChildren().get(i * 25 + j);
+        //         // l.setStyle("");
+        //         System.out.println(placement[j][i].status);
+        //         switch (placement[j][i].status) {
+        //             case CANTFIT:
+        //                 // l.setStyle("-fx-background-color: blue");
+        //                 break;
+        //             case WORD:
+        //                 // l.setStyle("-fx-background-color: red");
+        //                 break;
+        //             case FREE:
+        //                 // l.setStyle("-fx-background-color: green");
+        //                 break;
+        //             case OVERLAP:
+        //                 // l.setStyle("-fx-background-color: yellow");
+        //                 break;
 
-                }
+        //         }
 
-            }
-        }
+        //     }
+        // }
 
         switch (direction) {
             case RIGHT:
@@ -690,13 +690,7 @@ public class HelloController {
                     }
                 }
             }
-            if (numCorrect == wordsOnGrid.get(i).word.length() && !wordsOnGrid.get(i).found) { /*
-                                                                                                * If they all are, make
-                                                                                                * them green and add
-                                                                                                * them to
-                                                                                                * the protected
-                                                                                                * ArrayList.
-                                                                                                */
+            if (numCorrect == wordsOnGrid.get(i).word.length() && !wordsOnGrid.get(i).found) { 
                 for (int l = 0; l < labelsSelected.size(); l++) {
                     labelsSelected.get(l).setStyle("-fx-background-color: green");
                     completedLabels.add(labelsSelected.get(l));
@@ -902,26 +896,26 @@ public class HelloController {
         title.setText(wf.title);
         
 
-        Direction direction = Direction.RIGHT;
-        if (right.isSelected()) {
-            direction = Direction.RIGHT;
-        } else if (left.isSelected()) {
-            direction = Direction.LEFT;
-        } else if (up.isSelected()) {
-            direction = Direction.UP;
-        } else if (down.isSelected()) {
-            direction = Direction.DOWN;
-        } else if (UP_LEFT_DIAGOINAL.isSelected()) {
-            direction = Direction.UP_LEFT_DIAGOINAL;
-        } else if (UP_RIGHT_DIAGOINAL.isSelected()) {
-            direction = Direction.UP_RIGHT_DIAGOINAL;
-        } else if (DOWN_LEFT_DIAGOINAL.isSelected()) {
-            direction = Direction.DOWN_LEFT_DIAGOINAL;
-        } else if (DOWN_RIGHT_DIAGOINAL.isSelected()) {
-            direction = Direction.DOWN_RIGHT_DIAGOINAL;
-        }
+        // Direction direction = Direction.RIGHT;
+        // if (right.isSelected()) {
+        //     direction = Direction.RIGHT;
+        // } else if (left.isSelected()) {
+        //     direction = Direction.LEFT;
+        // } else if (up.isSelected()) {
+        //     direction = Direction.UP;
+        // } else if (down.isSelected()) {
+        //     direction = Direction.DOWN;
+        // } else if (UP_LEFT_DIAGOINAL.isSelected()) {
+        //     direction = Direction.UP_LEFT_DIAGOINAL;
+        // } else if (UP_RIGHT_DIAGOINAL.isSelected()) {
+        //     direction = Direction.UP_RIGHT_DIAGOINAL;
+        // } else if (DOWN_LEFT_DIAGOINAL.isSelected()) {
+        //     direction = Direction.DOWN_LEFT_DIAGOINAL;
+        // } else if (DOWN_RIGHT_DIAGOINAL.isSelected()) {
+        //     direction = Direction.DOWN_RIGHT_DIAGOINAL;
+        // }
 
-        GridSlot[][] placement = getAvailblePlacment(a.getText(), direction);
+        // GridSlot[][] placement = getAvailblePlacment(a.getText(), direction);
 
         // for (int i = 0; i < placement.length; i++) {
         // for (int j = 0; j < placement[i].length; j++) {
@@ -946,16 +940,16 @@ public class HelloController {
 
         // }
 
-        if (!addWord.isSelected()) {
-            placeWord(a.getText(), direction);
-            for (int i = 0; i < placement.length; i++) {
-                for (int j = 0; j < placement[i].length; j++) {
-                    Label l = (Label) gridPane.getChildren().get(i * 25 + j);
-                    l.setStyle("");
+        // if (!addWord.isSelected()) {
+        //     placeWord(a.getText(), direction);
+        //     for (int i = 0; i < placement.length; i++) {
+        //         for (int j = 0; j < placement[i].length; j++) {
+        //             Label l = (Label) gridPane.getChildren().get(i * 25 + j);
+        //             l.setStyle("");
 
-                }
-            }
-        }
+        //         }
+        //     }
+        // }
 
     }
 
