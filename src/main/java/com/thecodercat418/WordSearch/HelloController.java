@@ -870,94 +870,94 @@ public class HelloController {
     }
 
     public void addWord() {
-        WordFile wf = WordFile.grabCat("winter");
-        for (String s : wf.getWords()) {
-            Direction d = Direction.RIGHT;
-            int a = (int) (Math.random() * 8);
-            switch (a) {
-                case 0:
-                    d = Direction.RIGHT;
-                    break;
-                case 1:
-                    d = Direction.LEFT;
-                    break;
-                case 2:
-                    d = Direction.UP;
-                    break;
-                case 3:
-                    d = Direction.DOWN;
-                    break;
-                case 4:
-                    d = Direction.DOWN_LEFT_DIAGOINAL;
-                    break;
-                case 5:
-                    d = Direction.DOWN_RIGHT_DIAGOINAL;
-                    break;
-                case 6:
-                    d = Direction.UP_LEFT_DIAGOINAL;
-                    break;
-                case 7:
-                    d = Direction.UP_RIGHT_DIAGOINAL;
-                    break;
-            }
-            placeWord(s, d);
+        // WordFile wf = WordFile.grabCat("winter");
+        // for (String s : wf.getWords()) {
+        //     Direction d = Direction.RIGHT;
+        //     int a = (int) (Math.random() * 8);
+        //     switch (a) {
+        //         case 0:
+        //             d = Direction.RIGHT;
+        //             break;
+        //         case 1:
+        //             d = Direction.LEFT;
+        //             break;
+        //         case 2:
+        //             d = Direction.UP;
+        //             break;
+        //         case 3:
+        //             d = Direction.DOWN;
+        //             break;
+        //         case 4:
+        //             d = Direction.DOWN_LEFT_DIAGOINAL;
+        //             break;
+        //         case 5:
+        //             d = Direction.DOWN_RIGHT_DIAGOINAL;
+        //             break;
+        //         case 6:
+        //             d = Direction.UP_LEFT_DIAGOINAL;
+        //             break;
+        //         case 7:
+        //             d = Direction.UP_RIGHT_DIAGOINAL;
+        //             break;
+        //     }
+        //     placeWord(s, d);
+        // }
+        // title.setText(wf.getTitle());
+
+        Direction direction = Direction.RIGHT;
+        if (right.isSelected()) {
+        direction = Direction.RIGHT;
+        } else if (left.isSelected()) {
+        direction = Direction.LEFT;
+        } else if (up.isSelected()) {
+        direction = Direction.UP;
+        } else if (down.isSelected()) {
+        direction = Direction.DOWN;
+        } else if (UP_LEFT_DIAGOINAL.isSelected()) {
+        direction = Direction.UP_LEFT_DIAGOINAL;
+        } else if (UP_RIGHT_DIAGOINAL.isSelected()) {
+        direction = Direction.UP_RIGHT_DIAGOINAL;
+        } else if (DOWN_LEFT_DIAGOINAL.isSelected()) {
+        direction = Direction.DOWN_LEFT_DIAGOINAL;
+        } else if (DOWN_RIGHT_DIAGOINAL.isSelected()) {
+        direction = Direction.DOWN_RIGHT_DIAGOINAL;
         }
-        title.setText(wf.getTitle());
 
-        // Direction direction = Direction.RIGHT;
-        // if (right.isSelected()) {
-        // direction = Direction.RIGHT;
-        // } else if (left.isSelected()) {
-        // direction = Direction.LEFT;
-        // } else if (up.isSelected()) {
-        // direction = Direction.UP;
-        // } else if (down.isSelected()) {
-        // direction = Direction.DOWN;
-        // } else if (UP_LEFT_DIAGOINAL.isSelected()) {
-        // direction = Direction.UP_LEFT_DIAGOINAL;
-        // } else if (UP_RIGHT_DIAGOINAL.isSelected()) {
-        // direction = Direction.UP_RIGHT_DIAGOINAL;
-        // } else if (DOWN_LEFT_DIAGOINAL.isSelected()) {
-        // direction = Direction.DOWN_LEFT_DIAGOINAL;
-        // } else if (DOWN_RIGHT_DIAGOINAL.isSelected()) {
-        // direction = Direction.DOWN_RIGHT_DIAGOINAL;
-        // }
+        GridSlot[][] placement = getAvailblePlacment(a.getText(), direction);
 
-        // GridSlot[][] placement = getAvailblePlacment(a.getText(), direction);
+        for (int i = 0; i < placement.length; i++) {
+        for (int j = 0; j < placement[i].length; j++) {
+        Label l = (Label) gridPane.getChildren().get(i * Integer.parseInt(gridSize.split("x")[0]) + j);
+        switch (placement[j][i].getStatus()) {
+        case CANTFIT:
+        l.setStyle("-fx-background-color: blue");
+        break;
+        case WORD:
+        l.setStyle("-fx-background-color: red");
+        break;
+        case FREE:
+        l.setStyle("-fx-background-color: green");
+        break;
+        case OVERLAP:
+        l.setStyle("-fx-background-color: yellow");
+        break;
 
-        // for (int i = 0; i < placement.length; i++) {
-        // for (int j = 0; j < placement[i].length; j++) {
-        // Label l = (Label) gridPane.getChildren().get(i * 25 + j);
-        // switch (placement[j][i].getStatus()) {
-        // case CANTFIT:
-        // l.setStyle("-fx-background-color: blue");
-        // break;
-        // case WORD:
-        // l.setStyle("-fx-background-color: red");
-        // break;
-        // case FREE:
-        // l.setStyle("-fx-background-color: green");
-        // break;
-        // case OVERLAP:
-        // l.setStyle("-fx-background-color: yellow");
-        // break;
+        }
 
-        // }
+        }
 
-        // }
+        }
 
-        // }
+        if (!addWord.isSelected()) {
+        placeWord(a.getText(), direction);
+        for (int i = 0; i < placement.length; i++) {
+        for (int j = 0; j < placement[i].length; j++) {
+        Label l = (Label) gridPane.getChildren().get(i * Integer.parseInt(gridSize.split("x")[0]) + j);
+        l.setStyle("");
 
-        // if (!addWord.isSelected()) {
-        // placeWord(a.getText(), direction);
-        // for (int i = 0; i < placement.length; i++) {
-        // for (int j = 0; j < placement[i].length; j++) {
-        // Label l = (Label) gridPane.getChildren().get(i * 25 + j);
-        // l.setStyle("");
-
-        // }
-        // }
-        // }
+        }
+        }
+        }
 
     }
 
