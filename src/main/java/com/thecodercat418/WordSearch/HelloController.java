@@ -48,8 +48,8 @@ public class HelloController {
         ArrayList<GridSlot> gss = new ArrayList<>();
         for (int i = 0; i < placement.length; i++) {
             for (int j = 0; j < placement[i].length; j++) {
-                if (placement[j][i].status.equals(SlotStatus.FREE)
-                        || placement[j][i].status.equals(SlotStatus.OVERLAP)) {
+                if (placement[j][i].getStatus().equals(SlotStatus.FREE)
+                        || placement[j][i].getStatus().equals(SlotStatus.OVERLAP)) {
                     gss.add(placement[j][i]);
                 }
             }
@@ -58,7 +58,7 @@ public class HelloController {
 
         for (int i = 0; i < placement.length; i++) {
             for (int j = 0; j < placement[i].length; j++) {
-                if (placement[j][i].status.equals(SlotStatus.OVERLAP)) {
+                if (placement[j][i].getStatus().equals(SlotStatus.OVERLAP)) {
                     gaa.add(placement[j][i]);
                 }
             }
@@ -78,27 +78,27 @@ public class HelloController {
         ArrayList<Label> letters = new ArrayList<>();
 
         // for (int i = 0; i < placement.length; i++) {
-        //     for (int j = 0; j < placement[i].length; j++) {
-        //         //Label l = (Label) gridPane.getChildren().get(i * 25 + j);
-        //         // l.setStyle("");
-        //         System.out.println(placement[j][i].status);
-        //         switch (placement[j][i].status) {
-        //             case CANTFIT:
-        //                 // l.setStyle("-fx-background-color: blue");
-        //                 break;
-        //             case WORD:
-        //                 // l.setStyle("-fx-background-color: red");
-        //                 break;
-        //             case FREE:
-        //                 // l.setStyle("-fx-background-color: green");
-        //                 break;
-        //             case OVERLAP:
-        //                 // l.setStyle("-fx-background-color: yellow");
-        //                 break;
+        // for (int j = 0; j < placement[i].length; j++) {
+        // //Label l = (Label) gridPane.getChildren().get(i * 25 + j);
+        // // l.setStyle("");
+        // System.out.println(placement[j][i].getStatus());
+        // switch (placement[j][i].getStatus()) {
+        // case CANTFIT:
+        // // l.setStyle("-fx-background-color: blue");
+        // break;
+        // case WORD:
+        // // l.setStyle("-fx-background-color: red");
+        // break;
+        // case FREE:
+        // // l.setStyle("-fx-background-color: green");
+        // break;
+        // case OVERLAP:
+        // // l.setStyle("-fx-background-color: yellow");
+        // break;
 
-        //         }
+        // }
 
-        //     }
+        // }
         // }
 
         switch (direction) {
@@ -209,7 +209,7 @@ public class HelloController {
         }
         Word returnWord = new Word(word, startingPoint, direction, letters);
         wordsOnGrid.add(returnWord);
-        userWordList.getItems().add(returnWord.word);
+        userWordList.getItems().add(returnWord.getWord());
         repairGrid();
         return returnWord;
 
@@ -230,10 +230,10 @@ public class HelloController {
                 grid[i][j] = new GridSlot(SlotStatus.FREE);
                 for (Word w : wordsOnGrid) {
                     Label l = (Label) (gridPane.getChildren().get(Integer.parseInt(gridSize.split("x")[0]) * j + i));
-                    for (Label l2 : w.letters) {
+                    for (Label l2 : w.getLetters()) {
                         if (l == l2) {
-                            grid[i][j].status = SlotStatus.WORD;
-                            grid[i][j].word = w;
+                            grid[i][j].setStatus(SlotStatus.WORD);
+                            grid[i][j].setWord(w);
                         }
                     }
                 }
@@ -251,12 +251,12 @@ public class HelloController {
                             if (j + z < Integer.parseInt(gridSize.split("x")[0])) {
                                 Label l = (Label) gridPane.getChildrenUnmodifiable()
                                         .get(i * Integer.parseInt(gridSize.split("x")[0]) + j + z);
-                                if (grid[j + z][i].status.equals(SlotStatus.WORD)
+                                if (grid[j + z][i].getStatus().equals(SlotStatus.WORD)
                                         && l.getText().equals(word.substring(z, z + 1))
-                                        && !grid[j + z][i].word.direction.equals(Direction.RIGHT)
-                                        && !grid[j + z][i].word.direction.equals(Direction.LEFT)) {
+                                        && !grid[j + z][i].getWord().getDirection().equals(Direction.RIGHT)
+                                        && !grid[j + z][i].getWord().getDirection().equals(Direction.LEFT)) {
                                     overlap = true;
-                                } else if (!grid[j + z][i].word.word.isEmpty()) {
+                                } else if (!grid[j + z][i].getWord().getWord().isEmpty()) {
                                     zero = true;
                                 }
                             } else {
@@ -266,17 +266,17 @@ public class HelloController {
                             for (int a = 0; a < wordLength; a++) {
                                 if (j + a < Integer.parseInt(gridSize.split("x")[0])) {
                                     if (zero || border) {
-                                        if (!grid[j + a][i].word.word.isEmpty() && !border) {
+                                        if (!grid[j + a][i].getWord().getWord().isEmpty() && !border) {
                                             break;
                                         }
-                                        if (grid[j + a][i].status.equals(SlotStatus.FREE)) {
-                                            grid[j + a][i].status = SlotStatus.CANTFIT;
+                                        if (grid[j + a][i].getStatus().equals(SlotStatus.FREE)) {
+                                            grid[j + a][i].setStatus(SlotStatus.CANTFIT);
                                         }
 
                                     } else if (overlap && wordLength + j < Integer.parseInt(gridSize.split("x")[0])) {
-                                        if (grid[j][i].status != SlotStatus.WORD
-                                                || (grid[j][i].status.equals(SlotStatus.WORD) && a == 0)) {
-                                            grid[j][i].status = SlotStatus.OVERLAP;
+                                        if (grid[j][i].getStatus() != SlotStatus.WORD
+                                                || (grid[j][i].getStatus().equals(SlotStatus.WORD) && a == 0)) {
+                                            grid[j][i].setStatus(SlotStatus.OVERLAP);
                                         }
                                     }
                                 }
@@ -286,12 +286,12 @@ public class HelloController {
                             if (j - z > -1) {
                                 Label l = (Label) gridPane.getChildrenUnmodifiable()
                                         .get(i * Integer.parseInt(gridSize.split("x")[0]) + j - z);
-                                if (grid[j - z][i].status.equals(SlotStatus.WORD)
+                                if (grid[j - z][i].getStatus().equals(SlotStatus.WORD)
                                         && l.getText().equals(word.substring(z, z + 1))
-                                        && !grid[j - z][i].word.direction.equals(Direction.RIGHT)
-                                        && !grid[j - z][i].word.direction.equals(Direction.LEFT)) {
+                                        && !grid[j - z][i].getWord().getDirection().equals(Direction.RIGHT)
+                                        && !grid[j - z][i].getWord().getDirection().equals(Direction.LEFT)) {
                                     overlap = true;
-                                } else if (!grid[j - z][i].word.word.isEmpty()) {
+                                } else if (!grid[j - z][i].getWord().getWord().isEmpty()) {
                                     zero = true;
                                 }
                             } else {
@@ -301,16 +301,16 @@ public class HelloController {
                             for (int a = 0; a < wordLength; a++) {
                                 if (j - a > -1) {
                                     if (zero || border) {
-                                        if (!grid[j - a][i].word.word.isEmpty() && !border) {
+                                        if (!grid[j - a][i].getWord().getWord().isEmpty() && !border) {
                                             break;
                                         }
-                                        if (grid[j - a][i].status.equals(SlotStatus.FREE)) {
-                                            grid[j - a][i].status = SlotStatus.CANTFIT;
+                                        if (grid[j - a][i].getStatus().equals(SlotStatus.FREE)) {
+                                            grid[j - a][i].setStatus(SlotStatus.CANTFIT);
                                         }
                                     } else if (overlap && j - wordLength > -1) {
-                                        if (grid[j][i].status != SlotStatus.WORD
-                                                || (grid[j][i].status.equals(SlotStatus.WORD) && a == 0)) {
-                                            grid[j][i].status = SlotStatus.OVERLAP;
+                                        if (grid[j][i].getStatus() != SlotStatus.WORD
+                                                || (grid[j][i].getStatus().equals(SlotStatus.WORD) && a == 0)) {
+                                            grid[j][i].setStatus(SlotStatus.OVERLAP);
                                         }
                                     }
                                 }
@@ -320,12 +320,12 @@ public class HelloController {
                             if (i + z < Integer.parseInt(gridSize.split("x")[0])) {
                                 Label l = (Label) gridPane.getChildrenUnmodifiable()
                                         .get((i + z) * Integer.parseInt(gridSize.split("x")[0]) + j);
-                                if (grid[j][i + z].status.equals(SlotStatus.WORD)
+                                if (grid[j][i + z].getStatus().equals(SlotStatus.WORD)
                                         && l.getText().equals(word.substring(z, z + 1))
-                                        && !grid[j][i + z].word.direction.equals(Direction.DOWN)
-                                        && !grid[j][i + z].word.direction.equals(Direction.UP)) {
+                                        && !grid[j][i + z].getWord().getDirection().equals(Direction.DOWN)
+                                        && !grid[j][i + z].getWord().getDirection().equals(Direction.UP)) {
                                     overlap = true;
-                                } else if (!grid[j][i + z].word.word.isEmpty()) {
+                                } else if (!grid[j][i + z].getWord().getWord().isEmpty()) {
                                     zero = true;
                                 }
                             } else {
@@ -335,16 +335,16 @@ public class HelloController {
                             for (int a = 0; a < wordLength; a++) {
                                 if (i + a < Integer.parseInt(gridSize.split("x")[0])) {
                                     if (zero || border) {
-                                        if (!grid[j][i + a].word.word.isEmpty() && !border) {
+                                        if (!grid[j][i + a].getWord().getWord().isEmpty() && !border) {
                                             break;
                                         }
-                                        if (grid[j][i + a].status.equals(SlotStatus.FREE)) {
-                                            grid[j][i + a].status = SlotStatus.CANTFIT;
+                                        if (grid[j][i + a].getStatus().equals(SlotStatus.FREE)) {
+                                            grid[j][i + a].setStatus(SlotStatus.CANTFIT);
                                         }
                                     } else if (overlap && wordLength + i < Integer.parseInt(gridSize.split("x")[0])) {
-                                        if (grid[j][i].status != SlotStatus.WORD
-                                                || (grid[j][i].status.equals(SlotStatus.WORD) && a == 0)) {
-                                            grid[j][i].status = SlotStatus.OVERLAP;
+                                        if (grid[j][i].getStatus() != SlotStatus.WORD
+                                                || (grid[j][i].getStatus().equals(SlotStatus.WORD) && a == 0)) {
+                                            grid[j][i].setStatus(SlotStatus.OVERLAP);
                                         }
                                     }
                                 }
@@ -354,12 +354,12 @@ public class HelloController {
                             if (i - z > -1) {
                                 Label l = (Label) gridPane.getChildrenUnmodifiable()
                                         .get((i - z) * Integer.parseInt(gridSize.split("x")[0]) + j);
-                                if (grid[j][i - z].status.equals(SlotStatus.WORD)
+                                if (grid[j][i - z].getStatus().equals(SlotStatus.WORD)
                                         && l.getText().equals(word.substring(z, z + 1))
-                                        && !grid[j][i - z].word.direction.equals(Direction.DOWN)
-                                        && !grid[j][i - z].word.direction.equals(Direction.UP)) {
+                                        && !grid[j][i - z].getWord().getDirection().equals(Direction.DOWN)
+                                        && !grid[j][i - z].getWord().getDirection().equals(Direction.UP)) {
                                     overlap = true;
-                                } else if (!grid[j][i - z].word.word.isEmpty()) {
+                                } else if (!grid[j][i - z].getWord().getWord().isEmpty()) {
                                     zero = true;
                                 }
                             } else {
@@ -369,16 +369,16 @@ public class HelloController {
                             for (int a = 0; a < wordLength; a++) {
                                 if (i - a > -1) {
                                     if (zero || border) {
-                                        if (!grid[j][i - a].word.word.isEmpty() && !border) {
+                                        if (!grid[j][i - a].getWord().getWord().isEmpty() && !border) {
                                             break;
                                         }
-                                        if (grid[j][i - a].status.equals(SlotStatus.FREE)) {
-                                            grid[j][i - a].status = SlotStatus.CANTFIT;
+                                        if (grid[j][i - a].getStatus().equals(SlotStatus.FREE)) {
+                                            grid[j][i - a].setStatus(SlotStatus.CANTFIT);
                                         }
                                     } else if (overlap && i - wordLength + 1 > -1) {
-                                        if (grid[j][i].status != SlotStatus.WORD
-                                                || (grid[j][i].status.equals(SlotStatus.WORD) && a == 0)) {
-                                            grid[j][i].status = SlotStatus.OVERLAP;
+                                        if (grid[j][i].getStatus() != SlotStatus.WORD
+                                                || (grid[j][i].getStatus().equals(SlotStatus.WORD) && a == 0)) {
+                                            grid[j][i].setStatus(SlotStatus.OVERLAP);
                                         }
                                     }
                                 }
@@ -388,12 +388,14 @@ public class HelloController {
                             if (i + z < Integer.parseInt(gridSize.split("x")[0]) && j - z > -1) {
                                 Label l = (Label) gridPane.getChildrenUnmodifiable()
                                         .get((i + z) * Integer.parseInt(gridSize.split("x")[0]) + j - z);
-                                if (grid[j - z][i + z].status.equals(SlotStatus.WORD)
+                                if (grid[j - z][i + z].getStatus().equals(SlotStatus.WORD)
                                         && l.getText().equals(word.substring(z, z + 1))
-                                        && !grid[j - z][i + z].word.direction.equals(Direction.DOWN_LEFT_DIAGOINAL)
-                                        && !grid[j - z][i + z].word.direction.equals(Direction.UP_RIGHT_DIAGOINAL)) {
+                                        && !grid[j - z][i + z].getWord().getDirection()
+                                                .equals(Direction.DOWN_LEFT_DIAGOINAL)
+                                        && !grid[j - z][i + z].getWord().getDirection()
+                                                .equals(Direction.UP_RIGHT_DIAGOINAL)) {
                                     overlap = true;
-                                } else if (!grid[j - z][i + z].word.word.isEmpty()) {
+                                } else if (!grid[j - z][i + z].getWord().getWord().isEmpty()) {
                                     zero = true;
                                 }
                             } else {
@@ -403,16 +405,16 @@ public class HelloController {
                             for (int a = 0; a < wordLength; a++) {
                                 if (i + a < Integer.parseInt(gridSize.split("x")[0]) && j - a > -1) {
                                     if (zero || border) {
-                                        if (!grid[j - a][i + a].word.word.isEmpty() && !border) {
+                                        if (!grid[j - a][i + a].getWord().getWord().isEmpty() && !border) {
                                             break;
                                         }
-                                        if (grid[j - a][i + a].status.equals(SlotStatus.FREE)) {
-                                            grid[j - a][i + a].status = SlotStatus.CANTFIT;
+                                        if (grid[j - a][i + a].getStatus().equals(SlotStatus.FREE)) {
+                                            grid[j - a][i + a].setStatus(SlotStatus.CANTFIT);
                                         }
                                     } else if (overlap && wordLength + i < Integer.parseInt(gridSize.split("x")[0])) {
-                                        if (grid[j][i].status.equals(SlotStatus.FREE)
-                                                || (grid[j][i].status.equals(SlotStatus.WORD) && a == 0)) {
-                                            grid[j][i].status = SlotStatus.OVERLAP;
+                                        if (grid[j][i].getStatus().equals(SlotStatus.FREE)
+                                                || (grid[j][i].getStatus().equals(SlotStatus.WORD) && a == 0)) {
+                                            grid[j][i].setStatus(SlotStatus.OVERLAP);
                                         }
                                     }
                                 }
@@ -423,12 +425,14 @@ public class HelloController {
                                     && j + z < Integer.parseInt(gridSize.split("x")[0])) {
                                 Label l = (Label) gridPane.getChildrenUnmodifiable()
                                         .get((i + z) * Integer.parseInt(gridSize.split("x")[0]) + j + z);
-                                if (grid[j + z][i + z].status.equals(SlotStatus.WORD)
+                                if (grid[j + z][i + z].getStatus().equals(SlotStatus.WORD)
                                         && l.getText().equals(word.substring(z, z + 1))
-                                        && !grid[j + z][i + z].word.direction.equals(Direction.DOWN_RIGHT_DIAGOINAL)
-                                        && !grid[j + z][i + z].word.direction.equals(Direction.UP_LEFT_DIAGOINAL)) {
+                                        && !grid[j + z][i + z].getWord().getDirection()
+                                                .equals(Direction.DOWN_RIGHT_DIAGOINAL)
+                                        && !grid[j + z][i + z].getWord().getDirection()
+                                                .equals(Direction.UP_LEFT_DIAGOINAL)) {
                                     overlap = true;
-                                } else if (!grid[j + z][i + z].word.word.isEmpty()) {
+                                } else if (!grid[j + z][i + z].getWord().getWord().isEmpty()) {
                                     zero = true;
                                 }
                             } else {
@@ -439,17 +443,17 @@ public class HelloController {
                                 if (i + a < Integer.parseInt(gridSize.split("x")[0])
                                         && j + a < Integer.parseInt(gridSize.split("x")[0])) {
                                     if (zero || border) {
-                                        if (!grid[j + a][i + a].word.word.isEmpty() && !border) {
+                                        if (!grid[j + a][i + a].getWord().getWord().isEmpty() && !border) {
                                             break;
                                         }
-                                        if (grid[j + a][i + a].status.equals(SlotStatus.FREE)) {
-                                            grid[j + a][i + a].status = SlotStatus.CANTFIT;
+                                        if (grid[j + a][i + a].getStatus().equals(SlotStatus.FREE)) {
+                                            grid[j + a][i + a].setStatus(SlotStatus.CANTFIT);
                                         }
                                     } else if (overlap
                                             && wordLength - 1 + i < Integer.parseInt(gridSize.split("x")[0])) {
-                                        if (grid[j][i].status.equals(SlotStatus.FREE)
-                                                || (grid[j][i].status.equals(SlotStatus.WORD) && a == 0)) {
-                                            grid[j][i].status = SlotStatus.OVERLAP;
+                                        if (grid[j][i].getStatus().equals(SlotStatus.FREE)
+                                                || (grid[j][i].getStatus().equals(SlotStatus.WORD) && a == 0)) {
+                                            grid[j][i].setStatus(SlotStatus.OVERLAP);
                                         }
                                     }
                                 }
@@ -460,12 +464,14 @@ public class HelloController {
                                 System.out.println((i - z) * Integer.parseInt(gridSize.split("x")[0]) + j - z);
                                 Label l = (Label) gridPane.getChildrenUnmodifiable()
                                         .get((i - z) * Integer.parseInt(gridSize.split("x")[0]) + j - z);
-                                if (grid[j - z][i - z].status.equals(SlotStatus.WORD)
+                                if (grid[j - z][i - z].getStatus().equals(SlotStatus.WORD)
                                         && l.getText().equals(word.substring(z, z + 1))
-                                        && !grid[j - z][i - z].word.direction.equals(Direction.DOWN_RIGHT_DIAGOINAL)
-                                        && !grid[j - z][i - z].word.direction.equals(Direction.UP_LEFT_DIAGOINAL)) {
+                                        && !grid[j - z][i - z].getWord().getDirection()
+                                                .equals(Direction.DOWN_RIGHT_DIAGOINAL)
+                                        && !grid[j - z][i - z].getWord().getDirection()
+                                                .equals(Direction.UP_LEFT_DIAGOINAL)) {
                                     overlap = true;
-                                } else if (!grid[j - z][i - z].word.word.isEmpty()) {
+                                } else if (!grid[j - z][i - z].getWord().getWord().isEmpty()) {
                                     zero = true;
                                 }
                             } else {
@@ -475,16 +481,16 @@ public class HelloController {
                             for (int a = 0; a < wordLength; a++) {
                                 if (i - a > -1 && j - a > -1) {
                                     if (zero || border) {
-                                        if (!grid[j - a][i - a].word.word.isEmpty() && !border) {
+                                        if (!grid[j - a][i - a].getWord().getWord().isEmpty() && !border) {
                                             break;
                                         }
-                                        if (grid[j - a][i - a].status.equals(SlotStatus.FREE)) {
-                                            grid[j - a][i - a].status = SlotStatus.CANTFIT;
+                                        if (grid[j - a][i - a].getStatus().equals(SlotStatus.FREE)) {
+                                            grid[j - a][i - a].setStatus(SlotStatus.CANTFIT);
                                         }
                                     } else if (overlap) {
-                                        if (grid[j][i].status.equals(SlotStatus.FREE)
-                                                || (grid[j][i].status.equals(SlotStatus.WORD) && a == 0)) {
-                                            grid[j][i].status = SlotStatus.OVERLAP;
+                                        if (grid[j][i].getStatus().equals(SlotStatus.FREE)
+                                                || (grid[j][i].getStatus().equals(SlotStatus.WORD) && a == 0)) {
+                                            grid[j][i].setStatus(SlotStatus.OVERLAP);
                                         }
                                     }
                                 }
@@ -494,12 +500,14 @@ public class HelloController {
                             if (i - z > -1 && j + z < Integer.parseInt(gridSize.split("x")[0])) {
                                 Label l = (Label) gridPane.getChildrenUnmodifiable()
                                         .get((i - z) * Integer.parseInt(gridSize.split("x")[0]) + j + z);
-                                if (grid[j + z][i - z].status.equals(SlotStatus.WORD)
+                                if (grid[j + z][i - z].getStatus().equals(SlotStatus.WORD)
                                         && l.getText().equals(word.substring(z, z + 1))
-                                        && !grid[j + z][i - z].word.direction.equals(Direction.DOWN_LEFT_DIAGOINAL)
-                                        && !grid[j + z][i - z].word.direction.equals(Direction.UP_RIGHT_DIAGOINAL)) {
+                                        && !grid[j + z][i - z].getWord().getDirection()
+                                                .equals(Direction.DOWN_LEFT_DIAGOINAL)
+                                        && !grid[j + z][i - z].getWord().getDirection()
+                                                .equals(Direction.UP_RIGHT_DIAGOINAL)) {
                                     overlap = true;
-                                } else if (!grid[j + z][i - z].word.word.isEmpty()) {
+                                } else if (!grid[j + z][i - z].getWord().getWord().isEmpty()) {
                                     zero = true;
                                 }
                             } else {
@@ -509,16 +517,16 @@ public class HelloController {
                             for (int a = 0; a < wordLength; a++) {
                                 if (i - a > -1 && j + a < Integer.parseInt(gridSize.split("x")[0])) {
                                     if (zero || border) {
-                                        if (!grid[j + a][i - a].word.word.isEmpty() && !border) {
+                                        if (!grid[j + a][i - a].getWord().getWord().isEmpty() && !border) {
                                             break;
                                         }
-                                        if (grid[j + a][i - a].status.equals(SlotStatus.FREE)) {
-                                            grid[j + a][i - a].status = SlotStatus.CANTFIT;
+                                        if (grid[j + a][i - a].getStatus().equals(SlotStatus.FREE)) {
+                                            grid[j + a][i - a].setStatus(SlotStatus.CANTFIT);
                                         }
                                     } else if (overlap) {
-                                        if (grid[j][i].status.equals(SlotStatus.FREE)
-                                                || (grid[j][i].status.equals(SlotStatus.WORD) && a == 0)) {
-                                            grid[j][i].status = SlotStatus.OVERLAP;
+                                        if (grid[j][i].getStatus().equals(SlotStatus.FREE)
+                                                || (grid[j][i].getStatus().equals(SlotStatus.WORD) && a == 0)) {
+                                            grid[j][i].setStatus(SlotStatus.OVERLAP);
                                         }
                                     }
                                 }
@@ -541,7 +549,7 @@ public class HelloController {
                     for (int j = 0; j < Integer.parseInt(gridSize.split("x")[1]); j++) {
                         for (Direction d : Direction.values()) {
                             String selectedWord = "";
-                            for (int z = 0; z < word.word.length(); z++) {
+                            for (int z = 0; z < word.getWord().length(); z++) {
                                 Label l = null;
                                 switch (d) {
                                     case RIGHT:
@@ -601,7 +609,7 @@ public class HelloController {
                                 }
                                 boolean exists = false;
                                 for (Word word3 : wordsOnGrid) {
-                                    for (Label l2 : word3.letters) {
+                                    for (Label l2 : word3.getLetters()) {
                                         if (l == l2) {
                                             exists = true;
                                         }
@@ -611,11 +619,11 @@ public class HelloController {
                                     selectedWord += l.getText();
                                 }
 
-                                if (word.word.equals(selectedWord)) {
-                                    System.out.println("Unwanted copy of " + word.word + " found!");
+                                if (word.getWord().equals(selectedWord)) {
+                                    System.out.println("Unwanted copy of " + word.getWord() + " found!");
                                     rescan = true;
-                                    for (int fix = 0; fix < word.word.length(); fix++) {
-                                        switch (word.direction) {
+                                    for (int fix = 0; fix < word.getWord().length(); fix++) {
+                                        switch (word.getDirection()) {
                                             case RIGHT:
                                                 l = (Label) gridPane.getChildren()
                                                         .get(i * Integer.parseInt(gridSize.split("x")[0]) + j + fix);
@@ -683,7 +691,7 @@ public class HelloController {
     public boolean wordCompleteion() { // Checks to see if a word is completed.
         for (int i = 0; i < wordsOnGrid.size(); i++) {
             int numCorrect = 0;
-            for (Label l : wordsOnGrid.get(i).letters) {
+            for (Label l : wordsOnGrid.get(i).getLetters()) {
                 for (Label l2 : labelsSelected) {
                     if (l == l2) {
                         numCorrect++;
@@ -691,13 +699,13 @@ public class HelloController {
                     }
                 }
             }
-            if (numCorrect == wordsOnGrid.get(i).word.length() && !wordsOnGrid.get(i).found) { 
-                for (int l = 0; l < labelsSelected.size(); l++) {
-                    labelsSelected.get(l).setStyle("-fx-background-color: green");
-                    completedLabels.add(labelsSelected.get(l));
+            if (numCorrect == wordsOnGrid.get(i).getWord().length() && !wordsOnGrid.get(i).isFound()) {
+                for (int l = 0; l < wordsOnGrid.get(i).getLetters().size(); l++) {
+                    wordsOnGrid.get(i).getLetters().get(l).setStyle("-fx-background-color: green");
+                    completedLabels.add(wordsOnGrid.get(i).getLetters().get(l));
                 }
-                wordsOnGrid.get(i).found = true;
-                userWordList.getItems().remove(wordsOnGrid.get(i).word);
+                wordsOnGrid.get(i).found();
+                userWordList.getItems().remove(wordsOnGrid.get(i).getWord());
                 labelsSelected.clear(); // Reset selection
                 selecting = false;
                 return true;
@@ -713,8 +721,8 @@ public class HelloController {
             for (int i = 0; i < labelsSelected.size(); i++) {
                 labelsSelected.get(i).setStyle("");
                 for (Word w : wordsOnGrid) {
-                    for (Label l : w.letters) {
-                        if (w.found && l == labelsSelected.get(i)) {
+                    for (Label l : w.getLetters()) {
+                        if (w.isFound() && l == labelsSelected.get(i)) {
                             labelsSelected.get(i).setStyle("-fx-background-color: green");
                         }
                     }
@@ -863,7 +871,7 @@ public class HelloController {
 
     public void addWord() {
         WordFile wf = WordFile.grabCat("winter");
-        for (String s : wf.words) {
+        for (String s : wf.getWords()) {
             Direction d = Direction.RIGHT;
             int a = (int) (Math.random() * 8);
             switch (a) {
@@ -894,26 +902,25 @@ public class HelloController {
             }
             placeWord(s, d);
         }
-        title.setText(wf.title);
-        
+        title.setText(wf.getTitle());
 
         // Direction direction = Direction.RIGHT;
         // if (right.isSelected()) {
-        //     direction = Direction.RIGHT;
+        // direction = Direction.RIGHT;
         // } else if (left.isSelected()) {
-        //     direction = Direction.LEFT;
+        // direction = Direction.LEFT;
         // } else if (up.isSelected()) {
-        //     direction = Direction.UP;
+        // direction = Direction.UP;
         // } else if (down.isSelected()) {
-        //     direction = Direction.DOWN;
+        // direction = Direction.DOWN;
         // } else if (UP_LEFT_DIAGOINAL.isSelected()) {
-        //     direction = Direction.UP_LEFT_DIAGOINAL;
+        // direction = Direction.UP_LEFT_DIAGOINAL;
         // } else if (UP_RIGHT_DIAGOINAL.isSelected()) {
-        //     direction = Direction.UP_RIGHT_DIAGOINAL;
+        // direction = Direction.UP_RIGHT_DIAGOINAL;
         // } else if (DOWN_LEFT_DIAGOINAL.isSelected()) {
-        //     direction = Direction.DOWN_LEFT_DIAGOINAL;
+        // direction = Direction.DOWN_LEFT_DIAGOINAL;
         // } else if (DOWN_RIGHT_DIAGOINAL.isSelected()) {
-        //     direction = Direction.DOWN_RIGHT_DIAGOINAL;
+        // direction = Direction.DOWN_RIGHT_DIAGOINAL;
         // }
 
         // GridSlot[][] placement = getAvailblePlacment(a.getText(), direction);
@@ -921,7 +928,7 @@ public class HelloController {
         // for (int i = 0; i < placement.length; i++) {
         // for (int j = 0; j < placement[i].length; j++) {
         // Label l = (Label) gridPane.getChildren().get(i * 25 + j);
-        // switch (placement[j][i].status) {
+        // switch (placement[j][i].getStatus()) {
         // case CANTFIT:
         // l.setStyle("-fx-background-color: blue");
         // break;
@@ -942,14 +949,14 @@ public class HelloController {
         // }
 
         // if (!addWord.isSelected()) {
-        //     placeWord(a.getText(), direction);
-        //     for (int i = 0; i < placement.length; i++) {
-        //         for (int j = 0; j < placement[i].length; j++) {
-        //             Label l = (Label) gridPane.getChildren().get(i * 25 + j);
-        //             l.setStyle("");
+        // placeWord(a.getText(), direction);
+        // for (int i = 0; i < placement.length; i++) {
+        // for (int j = 0; j < placement[i].length; j++) {
+        // Label l = (Label) gridPane.getChildren().get(i * 25 + j);
+        // l.setStyle("");
 
-        //         }
-        //     }
+        // }
+        // }
         // }
 
     }
