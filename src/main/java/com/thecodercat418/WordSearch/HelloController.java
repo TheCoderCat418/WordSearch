@@ -683,10 +683,11 @@ public class HelloController {
     public boolean wordCompleteion() { // Checks to see if a word is completed.
         for (int i = 0; i < wordsOnGrid.size(); i++) {
             int numCorrect = 0;
-            for (int z = 0; z < wordsOnGrid.get(i).letters.size(); z++) {
-                for (int j = 0; j < labelsSelected.size(); j++) {
-                    if (wordsOnGrid.get(i).letters.get(z) == labelsSelected.get(j)) {
+            for (Label l : wordsOnGrid.get(i).letters) {
+                for (Label l2 : labelsSelected) {
+                    if (l == l2) {
                         numCorrect++;
+                        break;
                     }
                 }
             }
